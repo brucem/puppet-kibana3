@@ -35,9 +35,30 @@
 #
 # Copyright 2013 Your name here, unless otherwise noted.
 #
-class kibana3 {
+class kibana3 (
+  $install_dir      = $kibana3::params::install_dir,
+  $es_external_port = $kibana3::params::elasticsearch_external_port,
+  $es_url           = $kibana3::params::elasticsearch_url,
+  $type             = $kibana3::params::webserver,
+) inherits kibana3::params {
 
-  class { 'nginx': }
-  class { 'kibana3::install': }
+  class { 'kibana3::install':
+    install_dir => $install_dir,
+  }
+
+  class { 'kibana3::config':
+    es_external_port => $es_external_port,
+  }
+
+  class { 'kibana3::webserver':
+    install_dir      => $install_dir,
+    es_external_port => $es_external_port,
+    es_url           => $es_url,
+    type             => $type,
+  }
+
+  Class['kibana3::install']
+  -> Class['kibana3::config']
+  -> Class['kibana3::webserver']
 
 }
