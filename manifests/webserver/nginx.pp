@@ -41,6 +41,16 @@ class kibana3::webserver::nginx(
     proxy_read_timeout => 90,
   }
 
+  nginx::resource::location{ 'kibana-mapping':
+    ensure             => present,
+    vhost              => 'default',
+    location           => '^/.*/_mapping$',
+    match_type         => '~',
+    proxy              => $es_url,
+    proxy_read_timeout => 90,
+  }
+
+
   nginx::resource::location{ 'kibana-dashboard':
     ensure             => present,
     vhost              => 'default',
